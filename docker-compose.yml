@@ -1,0 +1,36 @@
+version: '3'
+services:
+
+  db:
+    container_name: phonebook-db
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGODB_DB: ${MONGODB_DB}
+      MONGODB_USER: ${MONGODB_USER}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+    ports:
+      - "27017"
+    volumes:
+      - ./scripts/initdb.sh:/docker-entrypoint-initdb.d/init.sh:ro
+      - data:/bitnami/mongodb
+  phonebook:
+    build:
+      context: .
+    container_name: phonebook
+    restart: on-failure
+    command: npm run dev
+    depends_on:
+      - phonebook-db
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    volumes:
+      - ./app:/src/app
+
+volumes:
+  data:
