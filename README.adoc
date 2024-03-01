@@ -1,4 +1,4 @@
-Simple CRUD phonebook RestApi
+Simple CRUD phonebook RestAPI
 
 [shell script]
 ----
