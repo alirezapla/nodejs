@@ -22,7 +22,11 @@ class phoneBookController {
             }
         } else {
             const entry = await phoneBookServices.createEntry(value)
-            res.status(201).json({ message: 'Created', data: entry });
+            if (entry instanceof BadRequestError) {
+                next(entry)
+            } else {
+                res.status(201).json({ message: 'Created', data: entry });
+            }
         }
         next()
     }

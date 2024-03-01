@@ -2,6 +2,7 @@ import { PhoneBook, } from '../Models/inMemory.model'
 import { logger } from "../Utils/logger"
 import { ServiceEvents } from "../Utils/events"
 import NotFoundError from '../Exceptions/NotFound'
+import BadRequestError from '../Exceptions/BadRequest'
 
 const phoenBookMap = new Map();
 
@@ -10,6 +11,9 @@ const phoenBookMap = new Map();
 export class inMemoryPhoneBookService {
     async createEntry(data: any) {
         logger.info("", { event: ServiceEvents.CREATE_ENTRY_SERVICE_STARTED })
+        if (phoenBookMap.get(data.name)) {
+            return new BadRequestError({ code: 400, message: "Entry Already Exist" })
+        }
         const phoneBook: PhoneBook = {
             value: data.value,
             label: data.label,
